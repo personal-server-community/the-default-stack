@@ -1,0 +1,89 @@
+nginx:
+  restart: always
+  ports:
+    - "80:80"
+
+postgres:
+  restart: always
+  image: postgres:latest
+  volumes_from:
+    - data
+  volumes:
+    - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    - ./backups/postgresql:/backup
+  env_file:
+    - env
+  expose:
+    - "127.0.0.1:5432:5432"
+
+redis:
+  restart: always
+  image: redis:latest
+  expose:
+    - "127.0.0.1:6379:6379"
+
+smtp:
+  restart: always
+  image: "catatnight/postfix"
+  ports:
+    - "127.0.0.1:25:25"
+    - "127.0.0.1:587:587"
+  volumes:
+    - /srv/postfix/conf:/etc/postfix
+    - /srv/postfix/domainkeys:/etc/opendkim/domainkeys
+  environment:
+    - maildomain=mail.example.com
+    - smtp_user=user:pwd
+
+data:
+  restart: always
+  image: alpine
+  volumes:
+    - /var/lib/postgresql
+  command: "true"
+
+
+traefik:
+  image: traefik:v1.5.4
+  deploy:
+    placement:
+      constraints:
+        - node.role == manager
+  ports:
+    - "80:80"
+    - "443:443"
+  volumes:
+    - "/var/run/docker.sock:/var/run/docker.sock"
+    - "/mnt/data/traefik/acme.json:/etc/traefik/acme.json"
+    - "./traefik.toml:/etc/traefik/traefik.toml:ro"
+  deploy:
+    labels:
+      - "traefik.port=8080"
+      - "traefik.frontend.rule=Host:traefik.cubieserver.de"
+
+s3:
+  image: jacksgt/minio:RELEASE.2018-01-18T20-33-21Z
+  volumes:
+    - "/mnt/data/minio/data:/export"
+  deploy:
+    labels:
+      - "traefik.port=9000"
+      - "traefik.frontend.rule=Host:s3.cubieserver.de"
+      - "traefik.frontend.passHostHeader=true"
+  environment:
+    - MINIO_REGION=eu-central-1
+    - MINIO_SECRET_KEY=foobar
+    - MINIO_ACCESS_KEY=foobar
+
+nginx:
+  image: nginx:1.12.2
+  volumes:
+    - "./nginx.conf:/etc/nginx/nginx.conf:ro"
+    - "/var/www/html:/var/www/html:ro"
+  deploy:
+    labels:
+      - "traefik.port=80"
+      - "traefik.frontend.rule=Host:cubieserver.de,blog.cubieserver.de"
+      - "traefik.frontend.passHostHeader=true"
+  networks:
+    - frontend
