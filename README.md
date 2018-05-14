@@ -1,7 +1,8 @@
 # The Default Stack
 
 The goal of this repo is to provide you with a basic stack that will allow you
-to build any application without thinking much about the deployment.
+to build any application for your own purpose without thinking much about the deployment.
+It will allow you to deploy already existing applications suitable for this default stack.
 
 It comes with basic services like:
 
