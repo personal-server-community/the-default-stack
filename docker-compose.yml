@@ -14,6 +14,8 @@ services:
       - "127.0.0.1:5432:5432"
     environment:
       - POSTGRES_PASSWORD=password
+    volumes:
+      - dbdata:/var/lib/postgresql/data
 
   smtp:
     restart: always
@@ -25,14 +27,16 @@ services:
       - maildomain=mail.example.com
       - smtp_user=user:pwd
 
-  s3:
+  files:
     ports:
-      - "127.0.0.1:9000:9000"
+      - "0.0.0.0:9000:9000"
     image: minio/minio:latest
     environment:
-      - MINIO_REGION=eu-central-1
-      - MINIO_SECRET_KEY=foobar
-      - MINIO_ACCESS_KEY=foobar
+      - MINIO_SECRET_KEY=AKIAIOSFODNN7EXAMPLE
+      - MINIO_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    volumes:
+      - filesdata:/data
+    command: server /data
 
   proxy:
     restart: always
@@ -40,3 +44,9 @@ services:
     ports:
       - "80:80"
       - "443:443"
+
+volumes:
+  dbdata:
+    external: false
+  filesdata:
+    external: false
