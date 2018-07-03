@@ -4,14 +4,10 @@ services:
   kvstore:
     restart: always
     image: redis:latest
-    ports:
-      - "127.0.0.1:6379:6379"
 
   database:
     restart: always
     image: postgres:latest
-    ports:
-      - "127.0.0.1:5432:5432"
     environment:
       - POSTGRES_PASSWORD=password
     volumes:
@@ -20,16 +16,11 @@ services:
   smtp:
     restart: always
     image: catatnight/postfix:latest
-    ports:
-      - "127.0.0.1:25:25"
-      - "127.0.0.1:587:587"
     environment:
       - maildomain=mail.example.com
       - smtp_user=user:pwd
 
   files:
-    ports:
-      - "127.0.0.1:9000:9000"
     image: minio/minio:latest
     environment:
       - MINIO_SECRET_KEY=AKIAIOSFODNN7EXAMPLE
@@ -38,20 +29,25 @@ services:
       - filesdata:/data
     command: server /data
 
-  proxy:
-    restart: always
-    image: nginx:latest
+  nginx-proxy:
+    image: jwilder/nginx-proxy
     ports:
       - "80:80"
-      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  app:
+    image: jwilder/whoami
+    environment:
+      - VIRTUAL_HOST=whoami.myps.net
 
   static:
     restart: always
     image: nginx:latest
-    ports:
-      - "127.0.0.1:3000:80"
     volumes:
       - ./static:/usr/share/nginx/html
+    environment:
+      - VIRTUAL_HOST=static.myps.net
 
 volumes:
   dbdata:
