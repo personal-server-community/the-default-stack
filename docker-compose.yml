@@ -25,6 +25,8 @@ services:
     environment:
       - MINIO_SECRET_KEY=AKIAIOSFODNN7EXAMPLE
       - MINIO_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      - MINIO_DOMAIN=minio.myps.net
+      - VIRTUAL_HOST=minio.myps.net
     volumes:
       - filesdata:/data
     command: server /data

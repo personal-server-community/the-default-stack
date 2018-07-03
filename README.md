@@ -21,3 +21,4 @@ TODO:
 
 * Add an example of Python application
 * Add an example of SSL with Let's encrypt via `docker-letsencrypt-nginx-proxy-companion`
+* Add redis configuration to avoid overcommit warning
