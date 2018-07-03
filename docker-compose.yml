@@ -21,6 +21,7 @@ services:
       - smtp_user=user:pwd
 
   files:
+    restart: always
     image: minio/minio:latest
     environment:
       - MINIO_SECRET_KEY=AKIAIOSFODNN7EXAMPLE
@@ -32,6 +33,7 @@ services:
     command: server /data
 
   nginx-proxy:
+    restart: always
     image: jwilder/nginx-proxy
     ports:
       - "80:80"
@@ -39,6 +41,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
 
   app:
+    restart: always
     image: jwilder/whoami
     environment:
       - VIRTUAL_HOST=whoami.myps.net
