@@ -17,8 +17,22 @@ And:
 * An example to deploy a static website
 * An example to deploy an application
 
-TODO:
 
-* Add an example of Python application
-* Add an example of SSL with Let's encrypt via `docker-letsencrypt-nginx-proxy-companion`
-* Add redis configuration to avoid overcommit warning
+# How to run
+
+We assume here that you have [Docker](https://docs.docker.com/install/) and 
+[Docker Compose](https://docs.docker.com/compose/install/) already installed.
+
+```
+git clone https://github.com/personal-server-community/the-default-stack
+cd the-default-stack
+
+docker-compose up
+```
+
+Services will be accessible through the 80 port. To access the example 
+applications, you must add the following hosts to your `/etc/hosts` file:
+`static.myps.net` and `whoami.myps.net`. 
+
+Running the compose file from scratch is interesting, but we encourage you to
+read it and tweak it to satisfy your needs and taste.
