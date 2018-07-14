@@ -17,15 +17,15 @@ services:
     restart: always
     image: catatnight/postfix:latest
     environment:
-      - maildomain=mail.example.com
+      - maildomain=mail.myps.net
       - smtp_user=user:pwd
 
   files:
     restart: always
     image: minio/minio:latest
     environment:
-      - MINIO_SECRET_KEY=AKIAIOSFODNN7EXAMPLE
-      - MINIO_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       - MINIO_DOMAIN=minio.myps.net
       - VIRTUAL_HOST=minio.myps.net
     volumes:
@@ -40,12 +40,6 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
 
-  app:
-    restart: always
-    image: jwilder/whoami
-    environment:
-      - VIRTUAL_HOST=whoami.myps.net
-
   static:
     restart: always
     image: nginx:latest
@@ -53,6 +47,13 @@ services:
       - ./static:/usr/share/nginx/html
     environment:
       - VIRTUAL_HOST=static.myps.net
+
+  app:
+    build: ./app
+    restart: always
+    image: thedefaulstack/app
+    environment:
+      - VIRTUAL_HOST=app.myps.net
 
 volumes:
   dbdata:

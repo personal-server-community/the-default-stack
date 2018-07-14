@@ -1,0 +1,8 @@
+flask
+flask_mail
+flask_restful
+flask_sqlalchemy
+sqlalchemy_utils
+psycopg2-binary
+redis
+minio
