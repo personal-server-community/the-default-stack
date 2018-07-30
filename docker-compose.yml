@@ -4,10 +4,14 @@ services:
   kvstore:
     restart: always
     image: redis:latest
+    # ports:
+    #  - "6379:6379"
 
   database:
     restart: always
     image: postgres:latest
+    # ports:
+    #  - "5432:5432"
     environment:
       - POSTGRES_PASSWORD=password
     volumes:
@@ -16,6 +20,8 @@ services:
   smtp:
     restart: always
     image: catatnight/postfix:latest
+    # ports:
+    #  - "25:25"
     environment:
       - maildomain=mail.myps.net
       - smtp_user=user:pwd
@@ -23,6 +29,8 @@ services:
   files:
     restart: always
     image: minio/minio:latest
+    # ports:
+    #  - "9000:9000"
     environment:
       - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
       - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
